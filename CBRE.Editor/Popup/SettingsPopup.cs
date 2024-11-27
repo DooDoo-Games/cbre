@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using CBRE.Settings;
 using ImGuiNET;
-using NativeFileDialog;
+using NativeFileDialogNET;
 using Num = System.Numerics;
 
 namespace CBRE.Editor.Popup {
@@ -63,9 +63,10 @@ namespace CBRE.Editor.Popup {
             ImGui.SameLine();
             addNew |= ImGui.Selectable("Click to add a new texture directory", false);
             if (addNew) {
-                var result =
-                    PickFolderDialog.Open(Directory.GetCurrentDirectory(), out string path);
-                if (result == Result.Okay) {
+                var result = new NativeFileDialog()
+                    .SelectFolder()
+                    .Open(out string path, Directory.GetCurrentDirectory());
+                if (result == DialogResult.Okay) {
                     Directories.TextureDirs.Add(path.Replace('\\', '/'));
                 }
             }
@@ -83,9 +84,10 @@ namespace CBRE.Editor.Popup {
                     ImGui.SameLine();
 
                     if (ImGui.Selectable(dir, false)) {
-                        var result =
-                            PickFolderDialog.Open(Directory.GetCurrentDirectory(), out string path);
-                        if (result == Result.Okay) {
+                        var result = new NativeFileDialog()
+                            .SelectFolder()
+                            .Open(out string path, Directory.GetCurrentDirectory());
+                        if (result == DialogResult.Okay) {
                             Directories.TextureDirs[i] = path.Replace('\\', '/');
                         }
                         break;

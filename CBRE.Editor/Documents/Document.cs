@@ -127,8 +127,9 @@ namespace CBRE.Editor.Documents {
             path = forceOverride ? path : path ?? MapFile;
 
             if (!string.IsNullOrEmpty(path)) {
-                IEnumerable<string> noSaveExtensions = FileTypeRegistration.GetSupportedExtensions().Where(x => !x.CanSave).Select(x => x.Extension);
-                if (noSaveExtensions.Any(ext => path.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
+                var ext = Path.GetExtension(path)[1..];
+                IEnumerable<string> noSaveExtensions = FileTypeRegistration.SupportedExtensions.Where(x => !x.CanSave).Select(x => x.Extension);
+                if (noSaveExtensions.Any(x => x.Equals(ext, StringComparison.OrdinalIgnoreCase)))
                 {
                     path = null;
                 }

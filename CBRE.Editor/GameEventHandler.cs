@@ -1,14 +1,15 @@
-using System;
+﻿using System;
 using System.IO;
 using CBRE.Common.Mediator;
 using CBRE.DataStructures.MapObjects;
 using CBRE.Editor.Documents;
 using CBRE.Editor.Popup;
+using CBRE.Editor.Settings;
 using CBRE.Providers;
 using CBRE.Providers.Map;
 using CBRE.Settings;
 using ImGuiNET;
-using NativeFileDialog;
+using NativeFileDialogNET;
 using Num = System.Numerics;
 using Path = System.IO.Path;
 
@@ -41,8 +42,11 @@ namespace CBRE.Editor {
             var currFilePath = Path.GetDirectoryName(DocumentManager.CurrentDocument?.MapFile);
             if (string.IsNullOrEmpty(currFilePath)) { currFilePath = Directory.GetCurrentDirectory(); }
 
-            var result = NativeFileDialog.OpenDialog.Open("3dw,vmf", currFilePath, out string outPath);
-            if (result == Result.Okay) {
+            var result = new NativeFileDialog()
+                .SelectFile()
+                .AddSupportedFiltersLoad()
+                .Open(out string outPath, null, currFilePath);
+            if (result == DialogResult.Okay) {
                 try {
                     Map _map = MapProvider.GetMapFromFile(outPath);
                     DocumentManager.AddAndSwitch(new Document(outPath, _map));

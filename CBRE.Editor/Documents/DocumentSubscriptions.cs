@@ -30,10 +30,11 @@ using System.Linq;
 using Quaternion = CBRE.DataStructures.Geometric.Quaternion;
 using CBRE.Editor.Popup;
 using CBRE.Editor.Popup.ObjectProperties;
+using CBRE.Editor.Settings;
 using CBRE.Providers;
 using CBRE.RMesh;
 using ImGuiNET;
-using NativeFileDialog;
+using NativeFileDialogNET;
 using RMeshDecomp;
 using Path = CBRE.DataStructures.MapObjects.Path;
 
@@ -210,8 +211,11 @@ namespace CBRE.Editor.Documents {
                     $"{_document.MapFileName} has unsaved changes.\nWould you like to save before closing?") {
                     Buttons = new [] {
                         new ConfirmPopup.Button("Yes", () => {
-                            var result = NativeFileDialog.SaveDialog.Open("vmf", _document.MapFileName, out string outPath);
-                            if (result == Result.Okay) {
+                            var result = new NativeFileDialog()
+                                .SaveFile()
+                                .AddSupportedFiltersSave()
+                                .Open(out string outPath, null, _document.MapFileName);
+                            if (result == DialogResult.Okay) {
                                 try {
                                     _document.SaveFile(outPath);
                                     DocumentManager.Remove(_document);
@@ -302,8 +306,11 @@ namespace CBRE.Editor.Documents {
             var currFilePath = System.IO.Path.GetDirectoryName(DocumentManager.CurrentDocument.MapFile);
             if (string.IsNullOrEmpty(currFilePath)) { currFilePath = Directory.GetCurrentDirectory(); }
 
-            var result = NativeFileDialog.SaveDialog.Open("vmf", currFilePath, out string outPath);
-            if (result == Result.Okay) {
+            var result = new NativeFileDialog()
+                .SaveFile()
+                .AddSupportedFiltersSave()
+                .Open(out string outPath, currFilePath);
+            if (result == DialogResult.Okay) {
                 try {
                     _document.SaveFile(outPath);
                 }

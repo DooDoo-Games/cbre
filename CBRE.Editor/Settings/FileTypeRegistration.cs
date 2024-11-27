@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using NativeFileDialogNET;
 
 namespace CBRE.Editor.Settings
 {
@@ -23,6 +24,24 @@ namespace CBRE.Editor.Settings
                 new FileType(".max", "Quake MAP Format (Hammer Backup)", false, true),
                 new FileType(".vmx", "Valve Map File (Hammer Backup)", false, true)
             };
+        }
+
+        public static NativeFileDialog AddSupportedFiltersSave(this NativeFileDialog diag) {
+            foreach (var ext in GetSupportedExtensions()) {
+                if (ext.CanSave) {
+                    diag.AddFilter(ext.Description, ext.Extension[1..]);
+                }
+            }
+            return diag;
+        }
+
+        public static NativeFileDialog AddSupportedFiltersLoad(this NativeFileDialog diag) {
+            foreach (var ext in GetSupportedExtensions()) {
+                if (ext.CanLoad) {
+                    diag.AddFilter(ext.Description, ext.Extension[1..]);
+                }
+            }
+            return diag;
         }
 
         private static string ExecutableLocation()

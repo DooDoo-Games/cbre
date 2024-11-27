@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ApplicationIcon />
     <StartupObject />
     <Platforms>x64;x86</Platforms>
@@ -26,8 +26,8 @@
     <ProjectReference Include="..\CBRE.RMesh\CBRE.RMesh.csproj" />
     <ProjectReference Include="..\CBRE.Settings\CBRE.Settings.csproj" />
     <ProjectReference Include="..\ImGui.NET\ImGui.NET.csproj" />
-    <ProjectReference Include="..\NativeFileDialog.NET\dotnet\NativeFileDialog.csproj" />
     <ProjectReference Include="..\Tools\RMeshDecomp\RMeshDecomp.csproj" />
+    <PackageReference Include="NativeFileDialogNET" Version="2.0.0" />
   </ItemGroup>
 
   <!-- TODO: detect target operating system? -->

@@ -382,6 +382,9 @@ namespace CBRE.Editor.Popup {
                                     new DataStructures.Geometric.Vector3(pos1.X - pos0.X, pos0.Y - pos1.Y, 0m);
                                 ViewportManager.MarkForRerender();
                             }
+                            GameMain.Instance.SelectedTool?.MouseWheel(viewport, new() {
+                                Delta = scrollWheelValue - prevScrollWheelValue,
+                            });
                         }
                     }
 

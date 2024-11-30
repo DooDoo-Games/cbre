@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using Face = CBRE.DataStructures.MapObjects.Face;
 using Mesh = Assimp.Mesh;
@@ -22,7 +23,8 @@ namespace CBRE.Providers.Model {
         protected override bool IsValidForFile(IFile file) {
             return file.Extension.ToLowerInvariant() == "b3d" ||
                    file.Extension.ToLowerInvariant() == "fbx" ||
-                   file.Extension.ToLowerInvariant() == "x";
+                   file.Extension.ToLowerInvariant() == "x" ||
+                   file.Extension.ToLowerInvariant() == "glb";
         }
 
         protected static void AddNode(Scene scene, Node node, DataStructures.Models.Model model, DataStructures.Models.Texture tex, Matrix4x4 parentMatrix) {
@@ -47,11 +49,9 @@ namespace CBRE.Providers.Model {
             List<MeshVertex> vertices = new List<MeshVertex>();
 
             for (int i = 0; i < assimpMesh.VertexCount; i++) {
-                var assimpVertex = assimpMesh.Vertices[i];
-                assimpVertex = selfMatrix * assimpVertex;
-                var assimpNormal = assimpMesh.Normals[i];
-                assimpNormal = selfMatrix * assimpNormal;
-                var assimpUv = assimpMesh.TextureCoordinateChannels[0][i];
+                var assimpVertex = Vector4.Transform(assimpMesh.Vertices[i], selfMatrix);
+                var assimpNormal = Vector4.Transform(assimpMesh.Normals[i], selfMatrix);
+                var assimpUv = assimpMesh.TextureCoordinateChannels[0].ElementAtOrDefault(i);
 
                 vertices.Add(new MeshVertex(new Vector3F(assimpVertex.X, -assimpVertex.Z, assimpVertex.Y),
                                             new Vector3F(assimpNormal.X, -assimpNormal.Z, assimpNormal.Y),
@@ -84,7 +84,7 @@ namespace CBRE.Providers.Model {
             DataStructures.Models.Bone bone = new DataStructures.Models.Bone(0, -1, null, "rootBone", Vector3F.Zero, Vector3F.Zero, Vector3F.One, Vector3F.One);
             model.Bones.Add(bone);
 
-            Scene scene = importer.ImportFile(file.FullPathName);
+            Scene scene = importer.ImportFile(file.FullPathName, PostProcessPreset.TargetRealTimeFast);
 
             DataStructures.Models.Texture tex = null;
 
@@ -171,7 +171,7 @@ namespace CBRE.Providers.Model {
                     Assimp.TextureWrapMode.Wrap,
                     Assimp.TextureWrapMode.Wrap,
                     0);
-                material.AddMaterialTexture(textureSlot);
+                material.AddMaterialTexture(ref textureSlot);
                 string path = Path.Combine(Path.GetDirectoryName(typeof(AssimpProvider).Assembly.Location), textureSlot.FilePath);
                 if (!File.Exists(path))
                     File.Copy(texPath, path);
@@ -194,9 +194,9 @@ namespace CBRE.Providers.Model {
 
                 foreach (Face face in faces) {
                     foreach (Vertex v in face.Vertices.Reverse<Vertex>()) {
-                        mesh.Vertices.Add(new Vector3D(-(float)v.Location.X, (float)v.Location.Z, (float)v.Location.Y));
-                        mesh.Normals.Add(new Vector3D((float)face.Plane.Normal.X, (float)face.Plane.Normal.Z, (float)face.Plane.Normal.Y));
-                        mesh.TextureCoordinateChannels[0].Add(new Vector3D((float)v.TextureU, -(float)v.TextureV, 0));
+                        mesh.Vertices.Add(new System.Numerics.Vector3(-(float)v.Location.X, (float)v.Location.Z, (float)v.Location.Y));
+                        mesh.Normals.Add(new System.Numerics.Vector3((float)face.Plane.Normal.X, (float)face.Plane.Normal.Z, (float)face.Plane.Normal.Y));
+                        mesh.TextureCoordinateChannels[0].Add(new System.Numerics.Vector3((float)v.TextureU, -(float)v.TextureV, 0));
                     }
                     mesh.UVComponentCount[0] = 2;
                     foreach (uint ind in face.GetTriangleIndices()) {
@@ -218,20 +218,20 @@ namespace CBRE.Providers.Model {
                     continue;
                 }
                 if (data.Name == "light" && mapObject is Entity ent) {
-                    Vector3D vec = new Vector3D(-(float)ent.Origin.X, (float)ent.Origin.Z, (float)ent.Origin.Y);
+                    var vec = new System.Numerics.Vector3(-(float)ent.Origin.X, (float)ent.Origin.Z, (float)ent.Origin.Y);
                     Node node = new Node();
                     node.Name = "Light" + scene.LightCount;
-                    node.Transform = Matrix4x4.FromTranslation(vec);
+                    node.Transform = Matrix4x4.CreateTranslation(vec);
                     rootNode.Children.Add(node);
                     Light lightNode = new Light();
                     lightNode.LightType = LightSourceType.Point;
                     lightNode.Position = vec;
                     lightNode.AngleInnerCone = MathF.PI * 2f;
                     lightNode.AngleOuterCone = MathF.PI * 2f;
-                    Vector3 color = ent.EntityData.GetPropertyVector3("color");
-                    lightNode.ColorDiffuse = new Color3D((float)color.X, (float)color.Y, (float)color.Z) / 255f;
-                    lightNode.ColorAmbient = new Color3D(0f, 0f, 0f);
-                    lightNode.ColorSpecular = new Color3D(1f, 1f, 1f);
+                    CBRE.DataStructures.Geometric.Vector3 color = ent.EntityData.GetPropertyVector3("color");
+                    lightNode.ColorDiffuse = new System.Numerics.Vector3((float)color.X, (float)color.Y, (float)color.Z) / 255f;
+                    lightNode.ColorAmbient = new System.Numerics.Vector3(0f, 0f, 0f);
+                    lightNode.ColorSpecular = new System.Numerics.Vector3(1f, 1f, 1f);
                     lightNode.AttenuationConstant = 1f;
                     lightNode.AttenuationLinear = float.Parse(ent.EntityData.GetPropertyValue("range"));
                     lightNode.AttenuationQuadratic = 1f;

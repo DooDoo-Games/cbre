@@ -1,4 +1,4 @@
-using CBRE.DataStructures.Geometric;
+﻿using CBRE.DataStructures.Geometric;
 using System.Drawing;
 using System.IO;
 using System.Linq;

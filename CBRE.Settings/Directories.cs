@@ -15,7 +15,7 @@ namespace CBRE.Settings {
         }
 
         private static readonly string[] TextureExtensions = { "jpeg", "jpg", "png" };
-        private static readonly string[] ModelExtensions = { "fbx", "x", "b3d" };
+        private static readonly string[] ModelExtensions = { "fbx", "x", "b3d", "glb" };
 
         public static string GetTextureExtension(string filename) {
             foreach (string dir in TextureDirs) {
@@ -32,7 +32,7 @@ namespace CBRE.Settings {
         }
 
         public static string GetModelPath(string filename) {
-            foreach (string dir in ModelDirs) {
+            foreach (string dir in ModelDirs.Append("C:/Users/Stefan/Desktop/RecursiveHotel/models")) {
                 string dirSlash = dir;
                 if (dir.Last() != '/' && dir.Last() != '\\') {
                     dirSlash += "/";

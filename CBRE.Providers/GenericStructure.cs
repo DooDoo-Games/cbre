@@ -1,4 +1,4 @@
-using CBRE.Common.Extensions;
+﻿using CBRE.Common.Extensions;
 using CBRE.DataStructures.Geometric;
 using System;
 using System.Collections;

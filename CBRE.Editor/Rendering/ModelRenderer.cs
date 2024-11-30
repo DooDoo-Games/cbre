@@ -1,4 +1,4 @@
-using CBRE.DataStructures.Geometric;
+﻿using CBRE.DataStructures.Geometric;
 using CBRE.DataStructures.MapObjects;
 using CBRE.DataStructures.Models;
 using CBRE.Graphics;
@@ -26,7 +26,9 @@ namespace CBRE.Editor.Rendering {
                     }
                     VertexBuffer buffer = new VertexBuffer(GlobalGraphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertexList.Count, BufferUsage.WriteOnly);
                     buffer.SetData(vertexList.ToArray(), 0, vertexList.Count);
-                    vertexBuffers[model].Add(texture, buffer);
+                    // TODO: The TryAdd is incorrect here. I think what happens is that assimp differentiates the textures,
+                    // CBRE can't find any of them so it just falls back to a dummy one, which all meshes now share.
+                    vertexBuffers[model].TryAdd(texture, buffer);
                     vertexList.Clear();
                 }
             }

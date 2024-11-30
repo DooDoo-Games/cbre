@@ -7,7 +7,6 @@ using System.Linq;
 using CBRE.Editor.Rendering;
 using CBRE.Graphics;
 using Microsoft.Xna.Framework;
-using Vector3 = CBRE.DataStructures.Geometric.Vector3;
 
 namespace CBRE.Editor.Compiling.Lightmap {
     /// <summary>

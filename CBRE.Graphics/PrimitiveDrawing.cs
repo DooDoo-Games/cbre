@@ -6,7 +6,6 @@ using CBRE.DataStructures.MapObjects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
-using CBREVector3 = CBRE.DataStructures.Geometric.Vector3;
 using CBREMatrix = CBRE.DataStructures.Geometric.Matrix;
 
 namespace CBRE.Graphics {
@@ -87,7 +86,7 @@ namespace CBRE.Graphics {
             }
         }
 
-        public static void Square(CBREVector3 position, decimal radius)
+        public static void Square(CBRE.DataStructures.Geometric.Vector3 position, decimal radius)
             => Square(position, (double)radius);
         
         public static void Square(CBRE.DataStructures.Geometric.Vector3 position, double radius) {

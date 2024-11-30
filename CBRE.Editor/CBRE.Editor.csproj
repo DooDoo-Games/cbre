@@ -17,7 +17,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- <ProjectReference Include="..\AssimpNet\AssimpNet\AssimpNet.csproj" /> -->
     <ProjectReference Include="..\CBRE.Common\CBRE.Common.csproj" />
     <ProjectReference Include="..\CBRE.DataStructures\CBRE.DataStructures.csproj" />
     <ProjectReference Include="..\CBRE.FileSystem\CBRE.FileSystem.csproj" />
@@ -27,7 +26,6 @@
     <ProjectReference Include="..\CBRE.Settings\CBRE.Settings.csproj" />
     <ProjectReference Include="..\ImGui.NET\ImGui.NET.csproj" />
     <ProjectReference Include="..\Tools\RMeshDecomp\RMeshDecomp.csproj" />
-    <PackageReference Include="NativeFileDialogNET" Version="2.0.0" />
   </ItemGroup>
 
   <!-- TODO: detect target operating system? -->
@@ -368,7 +366,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+    <PackageReference Include="NativeFileDialogNET" Version="2.0.0" />
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
   </ItemGroup>
 

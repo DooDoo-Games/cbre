@@ -1,7 +1,9 @@
-using System;
+﻿using System;
+using System.Linq;
 using CBRE.Editor.Documents;
 using CBRE.Editor.Rendering;
 using ImGuiNET;
+using Microsoft.Xna.Framework.Graphics;
 using Num = System.Numerics;
 
 namespace CBRE.Editor.Popup {
@@ -27,23 +29,23 @@ namespace CBRE.Editor.Popup {
                 ImGui.TreePop();
             }
             if (ImGui.TreeNode("Viewport Options")) {
-                for (int i = 0; i < ViewportManager.Viewports.Length; i++) {
-                    if (ViewportManager.Viewports[i] is Viewport3D viewport3D) {
-                        if (ImGui.BeginCombo("Viewport Render Type", viewport3D.Type.ToString())) {
-                            var evals = Enum.GetValues<Viewport3D.ViewType>();
-                            for (int j = 0; j < evals.Length; j++) {
-                                if (ImGui.Selectable(evals[j].ToString(), viewport3D.Type == evals[j])) {
-                                    viewport3D.Type = evals[j];
-                                    ViewportManager.MarkForRerender();
-                                    DocumentManager.Documents.ForEach(p => p.ObjectRenderer.MarkDirty());
-                                }
+                foreach (var (viewport, i) in ViewportManager.Viewports.Select((x, i) => (x, i + 1))) {
+                    ImGui.Separator();
+                    ImGui.Text($"Viewport {i}");
+                    if (ImGui.BeginCombo($"Render Type {i}", viewport.Type.ToString())) {
+                        var evals = Enum.GetValues<Viewport3D.ViewType>();
+                        for (int j = 0; j < evals.Length; j++) {
+                            if (ImGui.Selectable(evals[j].ToString(), viewport.Type == evals[j])) {
+                                viewport.Type = evals[j];
+                                ViewportManager.MarkForRerender();
+                                DocumentManager.Documents.ForEach(p => p.ObjectRenderer.MarkDirty());
                             }
-                            ImGui.EndCombo();
                         }
-                        bool b = viewport3D.ShouldRenderModels;
-                        if (ImGui.Checkbox("Should Render 3D Models", ref b)) {
-                            viewport3D.ShouldRenderModels = b;
-                        }
+                        ImGui.EndCombo();
+                    }
+                    bool b = viewport.ShouldRenderModels;
+                    if (ImGui.Checkbox($"Should Render 3D Models {i}", ref b)) {
+                        viewport.ShouldRenderModels = b;
                     }
                 }
                 ImGui.TreePop();

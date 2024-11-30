@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using CBRE.Common;
+using static CBRE.Editor.Rendering.Viewport3D;
 
 namespace CBRE.Editor.Rendering {
     public abstract class ViewportBase {
@@ -18,6 +19,9 @@ namespace CBRE.Editor.Rendering {
         public int Y { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+
+        public ViewType Type { get; set; }
+        public bool ShouldRenderModels { get; set; } = true;
 
         public MouseCursor Cursor { get; set; }
 

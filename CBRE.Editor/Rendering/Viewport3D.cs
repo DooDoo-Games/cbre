@@ -38,8 +38,6 @@ namespace CBRE.Editor.Rendering {
         }
 
         public Camera Camera { get; set; }
-        public ViewType Type { get; set; }
-        public bool ShouldRenderModels { get; set; }
 
         public Viewport3D(ViewType type) {
             Type = type;

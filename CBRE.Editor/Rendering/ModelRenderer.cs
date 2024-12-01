@@ -34,7 +34,12 @@ namespace CBRE.Editor.Rendering {
             }
         }
 
-        public static void Render(DataStructures.Models.Model model, Matrix mat, BasicEffect effect) {
+        private static readonly RasterizerState WireframeRasterizerState = new RasterizerState {
+            FillMode = FillMode.WireFrame,
+            CullMode = CullMode.None,
+        };
+
+        public static void Render(DataStructures.Models.Model model, Matrix mat, BasicEffect effect, bool wireframe = false) {
             var oldWorld = effect.World;
             effect.World = mat.ToXna();
 
@@ -47,6 +52,10 @@ namespace CBRE.Editor.Rendering {
                 effect.VertexColorEnabled = false;
                 effect.CurrentTechnique.Passes[0].Apply();
                 GlobalGraphics.GraphicsDevice.SetVertexBuffer(texBuf.Value);
+                if (wireframe) {
+                    // TODO: This is super hacky but who gives a damn!!
+                    GlobalGraphics.GraphicsDevice.RasterizerState = WireframeRasterizerState;
+                }
                 GlobalGraphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, texBuf.Value.VertexCount / 3);
                 if (texture != null) ((AsyncTexture)texture).Unbind();
 

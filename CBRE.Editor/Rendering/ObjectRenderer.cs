@@ -685,7 +685,7 @@ namespace CBRE.Editor.Rendering {
             Effects.BasicEffect.VertexColorEnabled = true;
         }
 
-        public void RenderModels() {
+        public void RenderModels(bool wireframe = false) {
             // Models
             Effects.BasicEffect.CurrentTechnique.Passes[0].Apply();
             var models = Document.Map.WorldSpawn
@@ -705,7 +705,7 @@ namespace CBRE.Editor.Rendering {
                                       * Matrix.RotationY(DMath.DegreesToRadians(euler.Z))
                                       * Matrix.RotationZ(DMath.DegreesToRadians(euler.Y))
                                       * Matrix.Scale(scale);
-                    ModelRenderer.Render(this.models[path].Model, modelMat, Effects.BasicEffect);
+                    ModelRenderer.Render(this.models[path].Model, modelMat, Effects.BasicEffect, wireframe);
                 } else if (ModelProvider.CanLoad(file)) {
                     ModelReference mref = ModelProvider.CreateModelReference(file);
                     this.models.Add(path, mref);

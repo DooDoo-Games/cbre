@@ -130,6 +130,7 @@ namespace CBRE.Editor.Rendering {
             Position = new Vector3(0, 0, 0);
             Direction = direction;
             //CenterScreen = new Vector3(Width / 2m, Height / 2m, 0);
+            Type = ViewType.Wireframe;
         }
 
         public override void FocusOn(Vector3 coordinate) {
@@ -217,15 +218,7 @@ namespace CBRE.Editor.Rendering {
                 objectRenderer.View = GetModelViewMatrix() * GetCameraMatrix();
                 objectRenderer.World = Microsoft.Xna.Framework.Matrix.Identity;
 
-                GlobalGraphics.GraphicsDevice.BlendFactor = Microsoft.Xna.Framework.Color.White;
-                GlobalGraphics.GraphicsDevice.BlendState = BlendState.NonPremultiplied;
-                GlobalGraphics.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-                GlobalGraphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
-                objectRenderer.RenderWireframe();
-
-                if (ShouldRenderModels)
-                    objectRenderer.RenderModels();
+                base.Render();
 
                 GlobalGraphics.GraphicsDevice.DepthStencilState = DepthStencilState.None;
             }

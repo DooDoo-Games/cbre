@@ -10,33 +10,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CBRE.Editor.Rendering {
     public class Viewport3D : ViewportBase {
-        public enum ViewType {
-            /// <summary>
-            /// Renders textures and shaded solids with lightmaps if available
-            /// </summary>
-            Lightmapped,
-
-            /// <summary>
-            /// Renders textured and shaded solids
-            /// </summary>
-            Textured,
-
-            /// <summary>
-            /// Renders shaded solids
-            /// </summary>
-            Shaded,
-
-            /// <summary>
-            /// Renders flat solids
-            /// </summary>
-            Flat,
-
-            /// <summary>
-            /// Renders wireframe solids
-            /// </summary>
-            Wireframe
-        }
-
         public Camera Camera { get; set; }
 
         public Viewport3D(ViewType type) {
@@ -160,32 +133,7 @@ namespace CBRE.Editor.Rendering {
                 objectRenderer.View = GetCameraMatrix();
                 objectRenderer.World = Microsoft.Xna.Framework.Matrix.Identity;
 
-
-                GlobalGraphics.GraphicsDevice.BlendFactor = Microsoft.Xna.Framework.Color.White;
-                GlobalGraphics.GraphicsDevice.BlendState = BlendState.NonPremultiplied;
-                GlobalGraphics.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-                GlobalGraphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
-                switch (Type) {
-                    case ViewType.Lightmapped:
-                        objectRenderer.RenderLightmapped();
-                        break;
-                    case ViewType.Wireframe:
-                        objectRenderer.RenderWireframe();
-                        break;
-                    case ViewType.Shaded:
-                        objectRenderer.RenderSolidUntextured();
-                        break;
-                    case ViewType.Flat:
-                        objectRenderer.RenderFlatUntextured();
-                        break;
-                    default:
-                        objectRenderer.RenderTextured();
-                        break;
-                }
-
-                if (ShouldRenderModels)
-                    objectRenderer.RenderModels();
+                base.Render();
 
                 objectRenderer.RenderSprites(this);
 

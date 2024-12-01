@@ -1,14 +1,41 @@
 ﻿using CBRE.DataStructures.Geometric;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using CBRE.Common;
-using static CBRE.Editor.Rendering.Viewport3D;
+using CBRE.Editor.Documents;
+using CBRE.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CBRE.Editor.Rendering {
     public abstract class ViewportBase {
+        public enum ViewType {
+            /// <summary>
+            /// Renders textures and shaded solids with lightmaps if available
+            /// </summary>
+            Lightmapped,
+
+            /// <summary>
+            /// Renders textured and shaded solids
+            /// </summary>
+            Textured,
+
+            /// <summary>
+            /// Renders shaded solids
+            /// </summary>
+            Shaded,
+
+            /// <summary>
+            /// Renders flat solids
+            /// </summary>
+            Flat,
+
+            /// <summary>
+            /// Renders wireframe solids
+            /// </summary>
+            Wireframe
+        }
+
         private Stopwatch _stopwatch;
         public bool IsFocused { get; private set; }
         private int UnfocusedUpdateCounter { get; set; }
@@ -117,7 +144,35 @@ namespace CBRE.Editor.Rendering {
 
         }
 
-        public abstract void Render();
+        public virtual void Render() {
+            var objectRenderer = DocumentManager.CurrentDocument.ObjectRenderer;
+
+            GlobalGraphics.GraphicsDevice.BlendFactor = Microsoft.Xna.Framework.Color.White;
+            GlobalGraphics.GraphicsDevice.BlendState = BlendState.NonPremultiplied;
+            GlobalGraphics.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            GlobalGraphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+
+            switch (Type) {
+                case ViewType.Lightmapped:
+                    objectRenderer.RenderLightmapped();
+                    break;
+                case ViewType.Wireframe:
+                    objectRenderer.RenderWireframe();
+                    break;
+                case ViewType.Shaded:
+                    objectRenderer.RenderSolidUntextured();
+                    break;
+                case ViewType.Flat:
+                    objectRenderer.RenderFlatUntextured();
+                    break;
+                default:
+                    objectRenderer.RenderTextured();
+                    break;
+            }
+
+            if (ShouldRenderModels)
+                objectRenderer.RenderModels(Type == ViewType.Wireframe);
+        }
 
         public virtual void DrawGrid() { }
 

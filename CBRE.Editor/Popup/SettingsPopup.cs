@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -25,7 +26,8 @@ namespace CBRE.Editor.Popup {
             }
 
             if (ImGui.BeginTabItem("Directories")) {
-                TextureDirGui();
+                DirectoryGui("Texture", Directories.TextureDirs);
+                DirectoryGui("Model", Directories.ModelDirs);
                 ImGui.EndTabItem();
             }
 
@@ -56,27 +58,27 @@ namespace CBRE.Editor.Popup {
             View.CameraFOV = fov;
         }
         
-        private void TextureDirGui() {
-            ImGui.Text("Texture Directories");
+        private void DirectoryGui(string type, List<string> dirs) {
+            ImGui.Text($"{type} Directories");
             ImGui.Separator();
-            bool addNew = ImGui.Button("+");
+            bool addNew = ImGui.Button($"+##{type}");
             ImGui.SameLine();
-            addNew |= ImGui.Selectable("Click to add a new texture directory", false);
+            addNew |= ImGui.Selectable($"Click to add a new {type.ToLower()} directory", false);
             if (addNew) {
                 var result = new NativeFileDialog()
                     .SelectFolder()
                     .Open(out string path, Directory.GetCurrentDirectory());
                 if (result == DialogResult.Okay) {
-                    Directories.TextureDirs.Add(path.Replace('\\', '/'));
+                    dirs.Add(path.Replace('\\', '/'));
                 }
             }
-            if (ImGui.BeginChild("TextureDirs", new Num.Vector2(0, GetNonFixedHeight() * 0.5f))) {
-                for (int i = 0; i < Directories.TextureDirs.Count; i++) {
-                    var dir = Directories.TextureDirs[i];
+            if (ImGui.BeginChild($"{type}Dirs", new Num.Vector2(0, GetNonFixedHeight() * 0.35f))) {
+                for (int i = 0; i < dirs.Count; i++) {
+                    var dir = dirs[i];
 
                     using (ColorPush.RedButton()) {
-                        if (ImGui.Button($"X##textureDirs{i}")) {
-                            Directories.TextureDirs.RemoveAt(i);
+                        if (ImGui.Button($"X##{type}Dirs{i}")) {
+                            dirs.RemoveAt(i);
                             break;
                         }
                     }
@@ -88,7 +90,7 @@ namespace CBRE.Editor.Popup {
                             .SelectFolder()
                             .Open(out string path, Directory.GetCurrentDirectory());
                         if (result == DialogResult.Okay) {
-                            Directories.TextureDirs[i] = path.Replace('\\', '/');
+                            dirs[i] = path.Replace('\\', '/');
                         }
                         break;
                     }

@@ -32,7 +32,7 @@ namespace CBRE.Settings {
         }
 
         public static string GetModelPath(string filename) {
-            foreach (string dir in ModelDirs.Append("C:/Users/Stefan/Desktop/RecursiveHotel/models")) {
+            foreach (string dir in ModelDirs) {
                 string dirSlash = dir;
                 if (dir.Last() != '/' && dir.Last() != '\\') {
                     dirSlash += "/";

@@ -68,7 +68,7 @@ namespace CBRE.Editor.Popup {
                 var result = new NativeFileDialog()
                     .SelectFolder()
                     .Open(out string path, Directory.GetCurrentDirectory());
-                if (result == DialogResult.Okay) {
+                if (!string.IsNullOrEmpty(path)) {
                     dirs.Add(path.Replace('\\', '/'));
                 }
             }
@@ -89,7 +89,7 @@ namespace CBRE.Editor.Popup {
                         var result = new NativeFileDialog()
                             .SelectFolder()
                             .Open(out string path, Directory.GetCurrentDirectory());
-                        if (result == DialogResult.Okay) {
+                        if (!string.IsNullOrEmpty(path)) {
                             dirs[i] = path.Replace('\\', '/');
                         }
                         break;

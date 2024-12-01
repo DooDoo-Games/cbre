@@ -32,7 +32,7 @@ namespace CBRE.Editor.Popup {
                 foreach (var (viewport, i) in ViewportManager.Viewports.Select((x, i) => (x, i + 1))) {
                     ImGui.Separator();
                     ImGui.Text($"Viewport {i}");
-                    if (ImGui.BeginCombo($"Render Type {i}", viewport.Type.ToString())) {
+                    if (ImGui.BeginCombo($"Render Type##{i}", viewport.Type.ToString())) {
                         var evals = Enum.GetValues<Viewport3D.ViewType>();
                         for (int j = 0; j < evals.Length; j++) {
                             if (ImGui.Selectable(evals[j].ToString(), viewport.Type == evals[j])) {
@@ -44,7 +44,7 @@ namespace CBRE.Editor.Popup {
                         ImGui.EndCombo();
                     }
                     bool b = viewport.ShouldRenderModels;
-                    if (ImGui.Checkbox($"Should Render 3D Models {i}", ref b)) {
+                    if (ImGui.Checkbox($"Should Render 3D Models##{i}", ref b)) {
                         viewport.ShouldRenderModels = b;
                     }
                 }

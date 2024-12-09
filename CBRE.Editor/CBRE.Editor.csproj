@@ -369,6 +369,7 @@
 
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+    <PackageReference Include="NativeFileDialogNET" Version="2.0.2" />
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
   </ItemGroup>
 
